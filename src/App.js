@@ -1,22 +1,27 @@
-import './index.scss';
+import React from "react";
+import "./index.scss";
 
 const questions = [
   {
-    title: 'React - это ... ?',
-    variants: ['библиотека', 'фреймворк', 'приложение'],
+    title: "React - это ... ?",
+    variants: ["библиотека", "фреймворк", "приложение"],
     correct: 0,
   },
   {
-    title: 'Компонент - это ... ',
-    variants: ['приложение', 'часть приложения или страницы', 'то, что я не знаю что такое'],
+    title: "Компонент - это ... ",
+    variants: [
+      "приложение",
+      "часть приложения или страницы",
+      "то, что я не знаю что такое",
+    ],
     correct: 1,
   },
   {
-    title: 'Что такое JSX?',
+    title: "Что такое JSX?",
     variants: [
-      'Это простой HTML',
-      'Это функция',
-      'Это тот же HTML, но с возможностью выполнять JS-код',
+      "Это простой HTML",
+      "Это функция",
+      "Это тот же HTML, но с возможностью выполнять JS-код",
     ],
     correct: 2,
   },
@@ -32,26 +37,40 @@ function Result() {
   );
 }
 
-function Game() {
+function Game({ step, question, onClickVariant }) {
+  const percentage = Math.round((step / questions.length) * 100);
+
+  console.log(percentage);
+
   return (
     <>
       <div className="progress">
-        <div style={{ width: '50%' }} className="progress__inner"></div>
+        <div style={{ width: "20%" }} className="progress__inner"></div>
       </div>
-      <h1>Что такое useState?</h1>
+      <h1>{question.title}</h1>
       <ul>
-        <li>Это функция для хранения данных компонента</li>
-        <li>Это глобальный стейт</li>
-        <li>Это когда на ты никому не нужен</li>
+        {question.variants.map((text, index) => (
+          <li onClick={() => onClickVariant(index)} key={text}>
+            {text}
+          </li>
+        ))}
       </ul>
     </>
   );
 }
 
 function App() {
+  const [step, setStep] = React.useState(0);
+  const question = questions[step];
+
+  const onClickVariant = (index) => {
+    console.log(step, index);
+    setStep(step + 1);
+  };
+
   return (
     <div className="App">
-      <Game />
+      <Game step={step} question={question} onClickVariant={onClickVariant} />
       {/* <Result /> */}
     </div>
   );
