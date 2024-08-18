@@ -12,13 +12,15 @@ function App() {
   const [rates, setRates] = React.useState({});
 
   React.useEffect(() => {
-    console.log("pr1232131");
     fetch(
-      `https://data.fixer.io/api/latest?access_key=cfae4f949a2c5f96e10fff5188108b4f`
+      `https://data.fixer.io/api/latest?access_key=06ab05bed2b9e6149a500b5cfe00de7b`
     )
       .then((res) => res.json())
       .then((json) => {
+        console.log(json);
+
         setRates(json);
+        onChangeToPrice(1);
       })
       .catch((err) => {
         console.warn(err);
@@ -27,32 +29,43 @@ function App() {
   }, []);
 
   const onChangeFromPrice = (value) => {
+    if (!rates.rates) return false;
     const price = value / rates.rates[fromCurrency];
     const result = price * rates.rates[toCurrency];
     console.log("rates.rates[toCurrency]", rates.rates[toCurrency]);
-    setToPrice(result);
+    setToPrice(result.toFixed(3));
     setFromPrice(value);
   };
 
   const onChangeToPrice = (value) => {
+    if (!rates.rates) return false;
+
     const result =
       (rates.rates[fromCurrency] / rates.rates[toCurrency]) * value;
-    setFromPrice(result);
+    setFromPrice(result.toFixed(3));
     setToPrice(value);
   };
+
+  React.useEffect(() => {
+    onChangeFromPrice(fromPrice);
+  }, [fromCurrency]);
+
+  React.useEffect(() => {
+    onChangeFromPrice(toPrice);
+  }, [toCurrency]);
 
   return (
     <div className="App">
       <Block
         value={fromPrice}
         currency={fromCurrency}
-        onChangeCurrency={(cur) => setFromCurrency(cur)}
+        onChangeCurrency={setFromCurrency}
         onChangeValue={onChangeFromPrice}
       />
       <Block
         value={toPrice}
         currency={toCurrency}
-        onChangeCurrency={(cur) => setToCurrency(cur)}
+        onChangeCurrency={setToCurrency}
         onChangeValue={onChangeToPrice}
       />
     </div>
